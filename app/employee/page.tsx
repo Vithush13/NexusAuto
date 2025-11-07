@@ -14,6 +14,15 @@ import Inventory from "./inventory/page";
  * - Role-based welcome message
  */
 
+interface Task {
+  _id: string;
+  title: string;
+  vehicle: string;
+  employee: string;
+  status: string;
+  updatedAt: string;
+  createdAt: string;
+}
 export default function EmployeeDashboard() {
   return (
      <EmployeeOnly>
