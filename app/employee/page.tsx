@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { EmployeeOnly } from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/lib/store/authStore";
 import { useEffect, useState } from "react";
-import Inventory from "./inventory/page";
 /**
  * Employee Dashboard component
  *
@@ -35,14 +34,15 @@ export default function EmployeeDashboard() {
 function EmployeeDashboardContent() {
   const { user } = useAuth();
   const router = useRouter();
-    const [stats, setStats] = useState({
+  const [stats, setStats] = useState({
     total: 0,
     completed: 0,
     pending: 0,
     inProgress: 0,
   });
-   useEffect(() => {
-  const fetchStats = async () => {
+
+  useEffect(() => {
+    const fetchStats = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/tasks/stats");
         const data = await res.json();
@@ -55,6 +55,18 @@ function EmployeeDashboardContent() {
     fetchStats();
   }, []);
 
+  // Add navigation handler
+  const handleNavigateToProjects = () => {
+    router.push('/employee/projects');
+  };
+
+  const handleNavigateToPendingProjects = () => {
+    router.push('/employee/projects/pending');
+  };
+  
+  const handleNavigateToCompletedProjects = () => {
+    router.push('/employee/projects/completed');
+  }
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-8">
@@ -65,144 +77,112 @@ function EmployeeDashboardContent() {
       </div>
 
       {/* Dashboard Cards */}
-     <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-  {/* Total Tasks */}
-  <div className="overflow-hidden rounded-lg bg-white shadow">
-    <div className="p-5">
-      <div className="flex items-center">
-        <div className="flex-shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-500">
-            <svg
-              className="h-5 w-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
-            </svg>
+      <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Total Tasks */}
+        <div className="overflow-hidden rounded-lg bg-white shadow cursor-pointer"
+        onClick={handleNavigateToProjects}>
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-500">
+                  <svg
+                    className="h-5 w-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-5 w-0 flex-1">
+                <dl>
+                  <dt className="truncate text-sm font-medium text-gray-500">
+                    Tasks Assigned
+                  </dt>
+                  <dd className="text-lg font-medium text-gray-900">{stats.total}</dd>
+                </dl>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="ml-5 w-0 flex-1">
-          <dl>
-            <dt className="truncate text-sm font-medium text-gray-500">
-              Tasks Assigned
-            </dt>
-            <dd className="text-lg font-medium text-gray-900">{stats.total}</dd>
-          </dl>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  {/* Completed Tasks */}
-  <div className="overflow-hidden rounded-lg bg-white shadow">
-    <div className="p-5">
-      <div className="flex items-center">
-        <div className="flex-shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-green-500">
-            <svg
-              className="h-5 w-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+        {/* Completed Tasks */}
+        <div className="overflow-hidden rounded-lg bg-white shadow cursor-pointer"
+        onClick={handleNavigateToCompletedProjects}>
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-green-500">
+                  <svg
+                    className="h-5 w-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-5 w-0 flex-1">
+                <dl>
+                  <dt className="truncate text-sm font-medium text-gray-500">
+                    Tasks Completed
+                  </dt>
+                  <dd className="text-lg font-medium text-gray-900">
+                    {stats.completed}
+                  </dd>
+                </dl>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="ml-5 w-0 flex-1">
-          <dl>
-            <dt className="truncate text-sm font-medium text-gray-500">
-              Tasks Completed
-            </dt>
-            <dd className="text-lg font-medium text-gray-900">
-              {stats.completed}
-            </dd>
-          </dl>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  {/* Pending Tasks */}
-  <div className="overflow-hidden rounded-lg bg-white shadow">
-    <div className="p-5">
-      <div className="flex items-center">
-        <div className="flex-shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-yellow-500">
-            <svg
-              className="h-5 w-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+        {/* Pending Tasks */}
+        <div className="overflow-hidden rounded-lg bg-white shadow cursor-pointer"
+        onClick={handleNavigateToPendingProjects}>
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-yellow-500">
+                  <svg
+                    className="h-5 w-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-5 w-0 flex-1">
+                <dl>
+                  <dt className="truncate text-sm font-medium text-gray-500">
+                    Pending Tasks
+                  </dt>
+                  <dd className="text-lg font-medium text-gray-900">
+                    {stats.pending}
+                  </dd>
+                </dl>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="ml-5 w-0 flex-1">
-          <dl>
-            <dt className="truncate text-sm font-medium text-gray-500">
-              Pending Tasks
-            </dt>
-            <dd className="text-lg font-medium text-gray-900">
-              {stats.pending}
-            </dd>
-          </dl>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  {/* In Progress Tasks */}
-  <div className="overflow-hidden rounded-lg bg-white shadow">
-    <div className="p-5">
-      <div className="flex items-center">
-        <div className="flex-shrink-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-orange-500">
-            <svg
-              className="h-5 w-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 3v18h18M9 9h6v6H9z"
-              />
-            </svg>
-          </div>
-        </div>
-        <div className="ml-5 w-0 flex-1">
-          <dl>
-            <dt className="truncate text-sm font-medium text-gray-500">
-              In Progress Tasks
-            </dt>
-            <dd className="text-lg font-medium text-gray-900">
-              {stats.inProgress}
-            </dd>
-          </dl>
-        </div>
-      </div>
-    </div>
-  </div>
       </div>
 
       {/* Recent Activity */}
